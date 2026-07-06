@@ -7,83 +7,70 @@ import org.springframework.stereotype.Component;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
-/**
- * Splits a stream of telemetry points into completed trips.
- * A trip starts on ignition=true and ends on the next ignition=false.
- */
 @Component
 public class TripDetector {
 
     public List<Trip> detect(List<TelemetryPoint> points) {
         List<TelemetryPoint> sorted = new ArrayList<>(points);
         sorted.sort(Comparator.comparing(TelemetryPoint::getTs));
-           
-        Map<String, List<Trip.TripPoint>> trips = new HashMap<>();
-        Map<String, Double> tripDistances = new HashMap<>();
+
+        List<Trip.TripPoint> tripPoints = new LinkedList<>();
+        double distance = 0;
+        String vehicleId = null;
         List<Trip> result = new LinkedList<>();
 
         for (TelemetryPoint point : sorted) {
-          if (!trips.containsKey(point.getVehicleId())) {
-            if (point.isIgnition()) {
-              trips.put(point.getVehicleId(), new LinkedList<Trip.TripPoint>());
-              tripDistances.put(point.getVehicleId(), .0);
-            } else {
-              continue;
-            }
-          }
-
-          List<Trip.TripPoint> tripPoints = trips.get(point.getVehicleId());
-
-         
-          Trip.TripPoint newPoint = Trip.TripPoint
-              .builder()
-              .ts(point.getTs().atZone(ZoneOffset.UTC).toInstant())
-              .lat(point.getLat())
-              .lon(point.getLon())
-              .speedKph(point.getSpeed())
-              .build();
-
-
-          if (!tripPoints.isEmpty()) {
-            Trip.TripPoint lastPoint = tripPoints.getLast();
-
-            if (newPoint.equals(lastPoint)) {
-              continue;
+            if (tripPoints.isEmpty()) {
+                if (!point.isIgnition()) {
+                    continue;
+                }
+                vehicleId = point.getVehicleId();
             }
 
-            double lastPointDistance = GeoDistance.haversineKm(lastPoint.getLat(), lastPoint.getLon(), point.getLat(), point.getLon());
-            tripDistances.merge(point.getVehicleId(), lastPointDistance, Double::sum);
-          }
+            Trip.TripPoint newPoint = Trip.TripPoint.builder()
+                    .ts(point.getTs().atZone(ZoneOffset.UTC).toInstant())
+                    .lat(point.getLat())
+                    .lon(point.getLon())
+                    .speedKph(point.getSpeed())
+                    .build();
 
-          tripPoints.add(newPoint);
-            
-          if (!point.isIgnition()) {
-            double distance = tripDistances.get(point.getVehicleId());
-            long durationSeconds = tripPoints.getLast().getTs().getEpochSecond()
-                - tripPoints.getFirst().getTs().getEpochSecond();
-            double avgSpeed = durationSeconds > 0
-                ? distance / (durationSeconds / 3600.0)
-                : 0;
+            if (!tripPoints.isEmpty()) {
+                Trip.TripPoint last = tripPoints.getLast();
 
-            Trip trip = Trip.builder()
-              .vehicleId(point.getVehicleId())
-              .startedAt(tripPoints.getFirst().getTs())
-              .endedAt(tripPoints.getLast().getTs())
-              .distanceKm(distance)
-              .avgSpeedKph(avgSpeed)
-              .points(tripPoints)
-              .build();
+                if (newPoint.equals(last)) {
+                    continue;
+                }
 
-            result.add(trip);
-            
-            trips.remove(point.getVehicleId());
-            tripDistances.remove(point.getVehicleId());
-          }
+                distance += GeoDistance.haversineKm(
+                        last.getLat(), last.getLon(),
+                        point.getLat(), point.getLon());
+            }
+
+            tripPoints.add(newPoint);
+
+            if (!point.isIgnition()) {
+                long durationSec = tripPoints.getLast().getTs().getEpochSecond()
+                        - tripPoints.getFirst().getTs().getEpochSecond();
+                double avgSpeed = durationSec > 0
+                        ? distance / (durationSec / 3600.0)
+                        : 0;
+
+                result.add(Trip.builder()
+                        .vehicleId(vehicleId)
+                        .startedAt(tripPoints.getFirst().getTs())
+                        .endedAt(tripPoints.getLast().getTs())
+                        .distanceKm(distance)
+                        .avgSpeedKph(avgSpeed)
+                        .points(tripPoints)
+                        .build());
+
+                tripPoints = new LinkedList<>();
+                distance = 0;
+                vehicleId = null;
+            }
         }
 
         return result;

@@ -1,0 +1,50 @@
+spring:
+  application:
+    name: pingine-fleet-pulse
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/pingine
+    username: pingine
+    password: password
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
+    open-in-view: false
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/pingine
+    redis:
+      host: localhost
+      port: 6379
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: pingine
+    password: password
+
+server:
+  port: 8080
+
+vehicle-registry:
+  url: http://localhost:8081
+
+fleet-pulse:
+  seed:
+    enabled: true
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
+logging:
+  level:
+    com.pingine.fleetpulse: INFO

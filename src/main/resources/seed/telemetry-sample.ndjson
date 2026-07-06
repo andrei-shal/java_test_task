@@ -1,0 +1,11 @@
+{"vehicleId":"aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa","ts":"2026-04-27T08:00:00Z","lat":52.5200,"lon":13.4050,"speed":0.0,"ignition":true}
+{"vehicleId":"aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa","ts":"2026-04-27T08:05:00Z","lat":52.5300,"lon":13.4200,"speed":45.0,"ignition":true}
+{"vehicleId":"aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa","ts":"2026-04-27T08:10:00Z","lat":52.5450,"lon":13.4400,"speed":62.0,"ignition":true}
+{"vehicleId":"aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa","ts":"2026-04-27T08:20:00Z","lat":52.5600,"lon":13.4700,"speed":58.0,"ignition":true}
+{"vehicleId":"aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa","ts":"2026-04-27T08:30:00Z","lat":52.5700,"lon":13.5000,"speed":0.0,"ignition":false}
+{"vehicleId":"aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa","ts":"2026-04-27T10:00:00Z","lat":52.5700,"lon":13.5000,"speed":0.0,"ignition":true}
+{"vehicleId":"aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa","ts":"2026-04-27T10:15:00Z","lat":52.6000,"lon":13.5500,"speed":70.0,"ignition":true}
+{"vehicleId":"aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa","ts":"2026-04-27T10:30:00Z","lat":52.6300,"lon":13.6000,"speed":0.0,"ignition":false}
+{"vehicleId":"bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb","ts":"2026-04-27T09:00:00Z","lat":53.5511,"lon":9.9937,"speed":0.0,"ignition":true}
+{"vehicleId":"bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb","ts":"2026-04-27T09:30:00Z","lat":53.5800,"lon":10.0500,"speed":80.0,"ignition":true}
+{"vehicleId":"bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb","ts":"2026-04-27T10:00:00Z","lat":53.6100,"lon":10.1200,"speed":0.0,"ignition":false}

@@ -38,23 +38,29 @@ public class TripDetector {
           }
 
           List<Trip.TripPoint> tripPoints = trips.get(point.getVehicleId());
-          
-          if (!tripPoints.isEmpty()) {
-            Trip.TripPoint lastPoint = tripPoints.getLast();
-            double lastPointDistance = GeoDistance.haversineKm(lastPoint.getLat(), lastPoint.getLon(), point.getLat(), point.getLon());
 
-            tripDistances.merge(point.getVehicleId(), lastPointDistance, Double::sum);
-          }
-
-          tripPoints.add(
-            Trip.TripPoint
+         
+          Trip.TripPoint newPoint = Trip.TripPoint
               .builder()
               .ts(point.getTs().atZone(ZoneOffset.UTC).toInstant())
               .lat(point.getLat())
               .lon(point.getLon())
               .speedKph(point.getSpeed())
-              .build()
-          );
+              .build();
+
+
+          if (!tripPoints.isEmpty()) {
+            Trip.TripPoint lastPoint = tripPoints.getLast();
+
+            if (newPoint.equals(lastPoint)) {
+              continue;
+            }
+
+            double lastPointDistance = GeoDistance.haversineKm(lastPoint.getLat(), lastPoint.getLon(), point.getLat(), point.getLon());
+            tripDistances.merge(point.getVehicleId(), lastPointDistance, Double::sum);
+          }
+
+          tripPoints.add(newPoint);
             
           if (!point.isIgnition()) {
             double distance = tripDistances.get(point.getVehicleId());

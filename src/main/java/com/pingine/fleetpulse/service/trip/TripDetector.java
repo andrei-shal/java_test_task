@@ -38,9 +38,9 @@ public class TripDetector {
                     .build();
 
             if (!tripPoints.isEmpty()) {
-                Trip.TripPoint last = tripPoints.getLast();
+                Trip.TripPoint last = tripPoints.get(tripPoints.size() - 1);
 
-                if (newPoint.equals(last)) {
+                if (newPoint.getTs().equals(last.getTs())) {
                     continue;
                 }
 
@@ -52,16 +52,18 @@ public class TripDetector {
             tripPoints.add(newPoint);
 
             if (!point.isIgnition()) {
-                long durationSec = tripPoints.getLast().getTs().getEpochSecond()
-                        - tripPoints.getFirst().getTs().getEpochSecond();
+                Trip.TripPoint first = tripPoints.get(0);
+                Trip.TripPoint last = tripPoints.get(tripPoints.size() - 1);
+                long durationSec = last.getTs().getEpochSecond()
+                        - first.getTs().getEpochSecond();
                 double avgSpeed = durationSec > 0
                         ? distance / (durationSec / 3600.0)
                         : 0;
 
                 result.add(Trip.builder()
                         .vehicleId(vehicleId)
-                        .startedAt(tripPoints.getFirst().getTs())
-                        .endedAt(tripPoints.getLast().getTs())
+                        .startedAt(first.getTs())
+                        .endedAt(last.getTs())
                         .distanceKm(distance)
                         .avgSpeedKph(avgSpeed)
                         .points(tripPoints)

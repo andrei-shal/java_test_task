@@ -34,7 +34,7 @@ public class TripServiceImpl implements TripService {
             throw new VehicleNotFoundException(vehicleId);
         }
 
-        Trip lastTrip = trips.getLast();
+        Trip lastTrip = trips.get(trips.size() - 1);
         VehicleResponse vehicle = vehicleService.getById(vehicleId);
 
         return TripResponse.builder()

@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.LinkedList;
 import java.util.List;
 
 @Component
@@ -17,10 +16,10 @@ public class TripDetector {
         List<TelemetryPoint> sorted = new ArrayList<>(points);
         sorted.sort(Comparator.comparing(TelemetryPoint::getTs));
 
-        List<Trip.TripPoint> tripPoints = new LinkedList<>();
+        List<Trip.TripPoint> tripPoints = new ArrayList<>();
         double distance = 0;
         String vehicleId = null;
-        List<Trip> result = new LinkedList<>();
+        List<Trip> result = new ArrayList<>();
 
         for (TelemetryPoint point : sorted) {
             if (tripPoints.isEmpty()) {
@@ -69,7 +68,7 @@ public class TripDetector {
                         .points(tripPoints)
                         .build());
 
-                tripPoints = new LinkedList<>();
+                tripPoints = new ArrayList<>();
                 distance = 0;
                 vehicleId = null;
             }
